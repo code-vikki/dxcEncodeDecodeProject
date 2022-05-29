@@ -12,6 +12,13 @@ public class EncoderDecoderTest {
     }
 
     @Test
+    public void encodeWithMoreThanOneEmptySpace(){
+        EncoderDecoder encoderDecoder = new EncoderDecoder('B');
+        String encodeText = encoderDecoder.encode("HOW ARE YOU");
+        assertEquals("GNV /QD XNT", encodeText);
+    }
+
+    @Test
     public void should_be_case_insenstive(){
         EncoderDecoder encoderDecoder = new EncoderDecoder('B');
         String encodeText = encoderDecoder.encode("hello world");

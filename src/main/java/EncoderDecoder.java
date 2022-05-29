@@ -1,17 +1,17 @@
 
 import java.util.*;
 
-public class EncoderDecoder implements IEncoderDecoder{
+public class EncoderDecoder implements IEncoderDecoder {
     private char offSet;
-    private static Map<Character, Integer> baseTable = Collections.unmodifiableMap(getBaseTable()) ;
+    private static Map<Character, Integer> baseTable = Collections.unmodifiableMap(getBaseTable());
     private static Map<Character, Integer> offSetTab;
 
     public EncoderDecoder(char offSet) {
         this.offSet = offSet;
-        this.offSetTab =  this.deriveOffSetTable();
+        this.offSetTab = this.deriveOffSetTable();
     }
 
-    private Map<Character, Integer> deriveOffSetTable(){
+    private Map<Character, Integer> deriveOffSetTable() {
         //TODO
         offSetTab = new HashMap<>(baseTable);
         Integer offSetValueForOriginalText = offSetTab.get(this.offSet);
@@ -42,25 +42,34 @@ public class EncoderDecoder implements IEncoderDecoder{
         }
 
 
-        List<Character> charOfList= new ArrayList<>();
-        for (Integer integer:intValofChar){
+        List<Character> charOfList = new ArrayList<>();
+        for (Integer integer : intValofChar) {
             for (Map.Entry<Character, Integer> entry : baseTable.entrySet()) {
-                if(integer==entry.getValue()){
+                if (integer == entry.getValue()) {
                     Character key = entry.getKey();
                     charOfList.add(key);
                 }
             }
         }
 
-        int indexOfWhitespace;
-        if(intValofChar.contains(null)){
-            indexOfWhitespace = intValofChar.indexOf(null);
-            charOfList.add(indexOfWhitespace,' ');
+
+        List<Integer> locationOfEmptySpace = new ArrayList<>();
+        for (int i = 0; i < encodedText.length(); i++) {
+            if(encodedText.charAt(i)==' '){
+                locationOfEmptySpace.add(i);
+            }
         }
 
-        String decodedString=" ";
-        for(char a: charOfList){
-            decodedString+=a;
+        for(Integer a:locationOfEmptySpace){
+            charOfList.add(a,' ');
+        }
+
+
+
+
+        String decodedString = " ";
+        for (char a : charOfList) {
+            decodedString += a;
         }
 
 
@@ -92,9 +101,21 @@ public class EncoderDecoder implements IEncoderDecoder{
             }
         }
 
-        if (plainText.contains(" ")) {
-            encodedMessage.add(plainText.indexOf(" "), ' ');
+//        if (plainText.contains(" ")) {
+//            encodedMessage.add(plainText.indexOf(" "), ' ');
+//        }
+
+        List<Integer> locationOfEmptySpace = new ArrayList<>();
+        for (int i = 0; i < plainText.length(); i++) {
+           if(plainText.charAt(i)==' '){
+               locationOfEmptySpace.add(i);
+           }
         }
+
+        for(Integer a:locationOfEmptySpace){
+            encodedMessage.add(a,' ');
+        }
+
 
         String encodedString = " ";
         for (Character d : encodedMessage) {
