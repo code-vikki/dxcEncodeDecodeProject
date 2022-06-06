@@ -38,33 +38,29 @@ public class EncoderDecoder implements IEncoderDecoder {
 
         for (char c : chars) {
             Integer integer = offSetTab.get(c);
-            intValofChar.add(integer);
+            int e = integer == null ? c : integer;
+            intValofChar.add(e);
         }
-
 
         List<Character> charOfList = new ArrayList<>();
-        for (Integer integer : intValofChar) {
+        Character characterOfEmptySpace = null;
+
+        for (int i = 0; i < intValofChar.size(); i++) {
+
+            Integer integer = intValofChar.get(i);
+
             for (Map.Entry<Character, Integer> entry : baseTable.entrySet()) {
-                if (integer == entry.getValue()) {
-                    Character key = entry.getKey();
-                    charOfList.add(key);
+
+                if(baseTable.containsKey(chars[i]) && entry.getValue()==integer){
+                    charOfList.add(entry.getKey());
                 }
+                if(!baseTable.containsKey(chars[i])){
+                   charOfList.add((char)integer.intValue());
+                   break;
+                }
+
             }
         }
-
-
-        List<Integer> locationOfEmptySpace = new ArrayList<>();
-        for (int i = 0; i < encodedText.length(); i++) {
-            if(encodedText.charAt(i)==' '){
-                locationOfEmptySpace.add(i);
-            }
-        }
-
-        for(Integer a:locationOfEmptySpace){
-            charOfList.add(a,' ');
-        }
-
-
 
 
         String decodedString = " ";
@@ -72,15 +68,17 @@ public class EncoderDecoder implements IEncoderDecoder {
             decodedString += a;
         }
 
-
-        return decodedString.trim();
+        if (characterOfEmptySpace == null) {
+            return decodedString.trim();
+        } else {
+            return decodedString.replace(characterOfEmptySpace, ' ').trim();
+        }
 
     }
 
+
     @Override
     public String encode(String plainText) {
-
-
         //hello
         char[] charArray = plainText.toUpperCase().toCharArray();
 
@@ -88,34 +86,29 @@ public class EncoderDecoder implements IEncoderDecoder {
         //h - 7. e-4, l- 11, l - 11, o -14
         for (char a : charArray) {
             Integer integer = baseTable.get(a);
-            valueInRefTable.add(integer);
+            int e = integer == null ? a : integer;
+            valueInRefTable.add(e);
         }
-
 
         List<Character> encodedMessage = new ArrayList<>();
+        Character stringofEmptySpace = null;
+
         for (int i = 0; i < valueInRefTable.size(); i++) {
 
-            for (Map.Entry<Character, Integer> entry : offSetTab.entrySet()) {
-                if (entry.getValue() == valueInRefTable.get(i))
-                    encodedMessage.add(entry.getKey());
-            }
+            Integer integer = valueInRefTable.get(i); //7 , 64
+
+               for(Map.Entry<Character,Integer> entry: offSetTab.entrySet()){
+
+                   if(offSetTab.containsKey(charArray[i]) && entry.getValue()==integer){
+                       encodedMessage.add(entry.getKey());
+                   }
+                   if(!offSetTab.containsKey(charArray[i])){
+                       encodedMessage.add((char)integer.intValue());
+                       break;
+                   }
+
+               }
         }
-
-//        if (plainText.contains(" ")) {
-//            encodedMessage.add(plainText.indexOf(" "), ' ');
-//        }
-
-        List<Integer> locationOfEmptySpace = new ArrayList<>();
-        for (int i = 0; i < plainText.length(); i++) {
-           if(plainText.charAt(i)==' '){
-               locationOfEmptySpace.add(i);
-           }
-        }
-
-        for(Integer a:locationOfEmptySpace){
-            encodedMessage.add(a,' ');
-        }
-
 
         String encodedString = " ";
         for (Character d : encodedMessage) {
@@ -123,36 +116,41 @@ public class EncoderDecoder implements IEncoderDecoder {
             encodedString += s1;
         }
 
-        return encodedString.trim();
-
-    }
-
-
-    private static Map<Character, Integer> getBaseTable() {
-        Map<Character, Integer> referenceTable = new HashMap<>();
-        Character alphaChar = 65;
-        Character numChar = 48;
-        for (int i = 0; i < 43; i++) {
-            if (i <= 25) {
-                referenceTable.put(alphaChar, i);
-                alphaChar++;
-            }
-            if (i > 25 && i <= 35) {
-                referenceTable.put(numChar, i);
-                numChar++;
-            }
+        if (stringofEmptySpace == null) {
+            return encodedString.trim();
+        } else {
+            return encodedString.replace(stringofEmptySpace, ' ').trim();
         }
-        referenceTable.put('(', 36);
-        referenceTable.put(')', 37);
-        referenceTable.put('*', 38);
-        referenceTable.put('+', 39);
-        referenceTable.put(',', 40);
-        referenceTable.put('-', 41);
-        referenceTable.put('.', 42);
-        referenceTable.put('/', 43);
-//        System.out.println(referenceTable);
-        return referenceTable;
+
     }
 
 
-}
+        private static Map<Character, Integer> getBaseTable () {
+            Map<Character, Integer> referenceTable = new HashMap<>();
+            Character alphaChar = 65;
+            Character numChar = 48;
+            for (int i = 0; i < 43; i++) {
+                if (i <= 25) {
+                    referenceTable.put(alphaChar, i);
+                    alphaChar++;
+                }
+                if (i > 25 && i <= 35) {
+                    referenceTable.put(numChar, i);
+                    numChar++;
+                }
+            }
+            referenceTable.put('(', 36);
+            referenceTable.put(')', 37);
+            referenceTable.put('*', 38);
+            referenceTable.put('+', 39);
+            referenceTable.put(',', 40);
+            referenceTable.put('-', 41);
+            referenceTable.put('.', 42);
+            referenceTable.put('/', 43);
+//        System.out.println(referenceTable);
+            return referenceTable;
+        }
+
+
+    }
+

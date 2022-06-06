@@ -28,5 +28,8 @@ public class Main {
         String decodedMessage = decoder.decode(s1);
         System.out.println(s1 + " is decoded to " + decodedMessage);
 
+
+
+
     }
 }
